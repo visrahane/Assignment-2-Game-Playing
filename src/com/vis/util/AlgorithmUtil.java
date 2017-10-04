@@ -9,10 +9,10 @@ package com.vis.util;
  */
 public class AlgorithmUtil {
 
-	public static void copyIntoTempGrid(int[][] tempGrid, int[][] grid) {
-		for (int i = 0; i < tempGrid.length; i++) {
-			for (int j = 0; j < tempGrid.length; j++) {
-				tempGrid[i][j] = grid[i][j];
+	public static void copyIntoTempGrid(char[][] tempBoard, char[][] cs) {
+		for (int i = 0; i < tempBoard.length; i++) {
+			for (int j = 0; j < tempBoard.length; j++) {
+				tempBoard[i][j] = cs[i][j];
 			}
 		}
 

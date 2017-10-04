@@ -13,7 +13,7 @@ public class OutputData {
 
 	private char board[][];
 
-	private char columnNo;
+	private int columnNo;
 
 	private int rowNo;
 
@@ -33,12 +33,12 @@ public class OutputData {
 		this.board = board;
 	}
 
-	public char getColumnNo() {
+	public int getColumnNo() {
 		return columnNo;
 	}
 
-	public void setColumnNo(char columnNo) {
-		this.columnNo = columnNo;
+	public void setColumnNo(int maxMoveArray) {
+		columnNo = maxMoveArray;
 	}
 
 	public int getRowNo() {

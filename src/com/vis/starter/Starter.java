@@ -43,7 +43,7 @@ public class Starter {
 
 	private static List<String> generateOutput(OutputData outputData) {
 		List<String> outputDataList = new ArrayList<>();
-		outputDataList.add(Character.toString(outputData.getColumnNo()) + outputData.getRowNo());
+		outputDataList.add(Character.toString((char) (outputData.getColumnNo() + 65)) + (outputData.getRowNo() + 1));
 		char[][] outputGrid = outputData.getBoard();
 		StringBuffer strBuffer =new StringBuffer();
 		for (char[] element : outputGrid) {
