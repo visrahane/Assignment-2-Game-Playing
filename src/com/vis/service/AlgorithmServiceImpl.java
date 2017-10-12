@@ -21,7 +21,8 @@ public class AlgorithmServiceImpl implements AlgorithmService {
 		OutputData outputData = new OutputData();
 		char tempBoard[][] = new char[inputData.getGridLength()][inputData.getGridLength()];
 		AlgorithmUtil.copyIntoTempGrid(tempBoard, inputData.getBoard());
-		com.vis.models.VNode vNode = MinimaxUtil.runAlphaBetaSearch(new com.vis.models.Node(tempBoard));
+		int depth = 3;
+		com.vis.models.VNode vNode = MinimaxUtil.runAlphaBetaSearch(new com.vis.models.Node(tempBoard), depth);
 		// makeAMove(inputData.getBoard(), maxMoveHeap, outputData);
 		// applyGravity(outputData.getBoard());
 		prepareOutput(outputData, vNode);

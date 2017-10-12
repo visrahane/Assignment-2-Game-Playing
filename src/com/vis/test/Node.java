@@ -16,12 +16,11 @@ public class Node {
 
 	private int value;
 
-	private int depth;
-
 	private List<Node> childrenList;
 
-	Node() {
+	Node(String name, int depth) {
 		childrenList = new ArrayList<>();
+		this.name = name;
 	}
 
 	public Node(int value, String name) {
@@ -57,14 +56,6 @@ public class Node {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public int getDepth() {
-		return depth;
-	}
-
-	public void setDepth(int depth) {
-		this.depth = depth;
 	}
 
 }

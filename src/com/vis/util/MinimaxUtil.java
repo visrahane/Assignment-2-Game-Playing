@@ -20,16 +20,16 @@ public class MinimaxUtil {
 
 	private static final int MAX_HEAP_SIZE = 3;
 
-	public static VNode runAlphaBetaSearchTemplate(Node state) {
-		return maxValue(state, Integer.MIN_VALUE, Integer.MAX_VALUE);
+	public static VNode runAlphaBetaSearchTemplate(Node state, int depth) {
+		return maxValue(state, Integer.MIN_VALUE, Integer.MAX_VALUE, depth);
 	}
 
-	public static com.vis.models.VNode runAlphaBetaSearch(com.vis.models.Node root) {
-		return maxValue(root, Integer.MIN_VALUE, Integer.MAX_VALUE);
+	public static com.vis.models.VNode runAlphaBetaSearch(com.vis.models.Node root, int depth) {
+		return maxValue(root, Integer.MIN_VALUE, Integer.MAX_VALUE, depth);
 	}
 
-	private static VNode maxValue(Node currentState, int alpha, int beta) {
-		if (shouldTerminate(currentState))// terminal
+	private static VNode maxValue(Node currentState, int alpha, int beta, int depth) {
+		if (shouldTerminate(currentState, depth))// terminal
 		{
 			int value = getValueFromUtility(currentState);
 			VNode vnode = prepareVNode(currentState, 0, value);
@@ -39,7 +39,7 @@ public class MinimaxUtil {
 		VNode vnode = null;
 		for(int i=0;i<currentState.getChildrenList().size();i++)//each action a
 		{
-			int maxValue = minValue(getNextState(currentState, i), alpha, beta).getValue();
+			int maxValue = minValue(getNextState(currentState, i), alpha, beta, depth - 1).getValue();
 			if (v < maxValue) {
 				v = maxValue;
 				vnode = prepareVNode(currentState, i, v);
@@ -53,10 +53,10 @@ public class MinimaxUtil {
 		return vnode;
 	}
 
-	private static com.vis.models.VNode maxValue(com.vis.models.Node currentState, int alpha, int beta) {
+	private static com.vis.models.VNode maxValue(com.vis.models.Node currentState, int alpha, int beta, int depth) {
 		com.vis.models.VNode vnode = null;
 		createChildStates(currentState, AlgorithmConstants.MAX);
-		if (shouldTerminate(currentState))// terminal
+		if (shouldTerminate(currentState, depth))// terminal
 		{
 			int value = getValueFromUtility(currentState);
 			vnode = prepareVNode(currentState, 0, value);
@@ -65,7 +65,7 @@ public class MinimaxUtil {
 		int v = Integer.MIN_VALUE;
 		for(int i=0;i<currentState.getChildrenList().size();i++)//each action a
 		{
-			int maxValue = minValue(getNextState(currentState, i), alpha, beta).getValue();
+			int maxValue = minValue(getNextState(currentState, i), alpha, beta, depth - 1).getValue();
 			if (v < maxValue) {
 				v = maxValue;
 				vnode = prepareVNode(currentState, i, v);
@@ -90,8 +90,8 @@ public class MinimaxUtil {
 		return vnode;
 	}
 
-	private static VNode minValue(Node currentState, int alpha, int beta) {
-		if (shouldTerminate(currentState))// terminal
+	private static VNode minValue(Node currentState, int alpha, int beta, int depth) {
+		if (shouldTerminate(currentState, depth))// terminal
 		{
 			int value = getValueFromUtility(currentState);
 			VNode vnode = prepareVNode(currentState, 0, value);
@@ -101,7 +101,7 @@ public class MinimaxUtil {
 		int v = Integer.MAX_VALUE;
 		for(int i=0;i<currentState.getChildrenList().size();i++) //for each a in actions
 		{
-			int minValue = maxValue(getNextState(currentState, i), alpha, beta).getValue();
+			int minValue = maxValue(getNextState(currentState, i), alpha, beta, depth - 1).getValue();
 			if (v > minValue) {
 				v = minValue;
 				vnode = prepareVNode(currentState, i, v);
@@ -129,10 +129,10 @@ public class MinimaxUtil {
 	}
 
 
-	private static com.vis.models.VNode minValue(com.vis.models.Node currentState, int alpha, int beta) {
+	private static com.vis.models.VNode minValue(com.vis.models.Node currentState, int alpha, int beta, int depth) {
 		com.vis.models.VNode vnode = null;
 		createChildStates(currentState, AlgorithmConstants.MIN);
-		if (shouldTerminate(currentState))// terminal
+		if (shouldTerminate(currentState, depth))// terminal
 		{
 			int value = getValueFromUtility(currentState);
 			vnode = prepareVNode(currentState, 0, value);
@@ -141,7 +141,7 @@ public class MinimaxUtil {
 		int v = Integer.MAX_VALUE;
 		for(int i=0;i<currentState.getChildrenList().size();i++) //for each a in actions
 		{
-			int minValue = maxValue(getNextState(currentState, i), alpha, beta).getValue();
+			int minValue = maxValue(getNextState(currentState, i), alpha, beta, depth - 1).getValue();
 			if (v > minValue) {
 				v = minValue;
 				vnode = prepareVNode(currentState, i, v);
@@ -304,15 +304,15 @@ public class MinimaxUtil {
 		return currentState.getValue();
 	}
 
-	private static boolean shouldTerminate(Node currentState) {
+	private static boolean shouldTerminate(Node currentState, int depth) {
 		System.out.println("visited values" + currentState.getValue());
-		if (currentState.getChildrenList().isEmpty())
+		if (currentState.getChildrenList().isEmpty() || depth == 0)
 			return true;
 		return false;
 	}
 
-	private static boolean shouldTerminate(com.vis.models.Node currentState) {
-		if (currentState.getChildrenList().isEmpty())
+	private static boolean shouldTerminate(com.vis.models.Node currentState, int depth) {
+		if (currentState.getChildrenList().isEmpty() || depth == 0)
 			return true;
 		return false;
 	}
