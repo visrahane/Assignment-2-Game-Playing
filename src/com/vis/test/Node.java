@@ -11,7 +11,12 @@ import java.util.List;
  *
  */
 public class Node {
+
+	private String name;
+
 	private int value;
+
+	private int depth;
 
 	private List<Node> childrenList;
 
@@ -19,9 +24,15 @@ public class Node {
 		childrenList = new ArrayList<>();
 	}
 
-	public Node(int value) {
+	public Node(int value, String name) {
+		this.setName(name);
 		this.value = value;
 		childrenList = new ArrayList<>();
+	}
+
+	public Node(String name) {
+		childrenList = new ArrayList<>();
+		this.name = name;
 	}
 
 	public int getValue() {
@@ -39,4 +50,21 @@ public class Node {
 	public void addToChildrenList(Node child) {
 		childrenList.add(child);
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getDepth() {
+		return depth;
+	}
+
+	public void setDepth(int depth) {
+		this.depth = depth;
+	}
+
 }

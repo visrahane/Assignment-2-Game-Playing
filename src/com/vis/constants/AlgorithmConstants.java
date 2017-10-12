@@ -1,6 +1,6 @@
 package com.vis.constants;
 /**
- * 
+ *
  */
 
 /**
@@ -8,7 +8,6 @@ package com.vis.constants;
  *
  */
 public class AlgorithmConstants {
-	public static final String BFS = "BFS";
-	public static final String DFS = "DFS";
-	public static final String SA = "SA";
+	public static final String MIN = "MIN";
+	public static final String MAX = "MAX";
 }
