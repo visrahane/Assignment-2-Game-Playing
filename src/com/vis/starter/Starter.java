@@ -5,7 +5,9 @@ package com.vis.starter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import com.vis.constants.IOConstants;
 import com.vis.models.InputData;
 import com.vis.models.OutputData;
 import com.vis.reader.InputReader;
@@ -20,13 +22,20 @@ import com.vis.util.DataParserUtil;
  */
 public class Starter {
 
+	public static Map<Integer, Float> calibrationMap;
+
 	public static void main(String[] args) {
 		long curretTime = System.currentTimeMillis();
 		InputData inputData = readInput();
+		populateCalibrationMap();
 		OutputData outputData = runAlgorithm(inputData);
 		displayOutput(outputData);
 		System.out.println(System.currentTimeMillis() - curretTime);
-		// Arrays.deepToString(outputData.getGrid()));
+	}
+
+	private static void populateCalibrationMap() {
+		InputReader inputReader = new InputReader(IOConstants.CALIBRATION_FILENAME);
+		calibrationMap = inputReader.readIntoMap();
 	}
 
 	private static void displayOutput(OutputData outputData) {
@@ -58,7 +67,7 @@ public class Starter {
 
 	private static InputData readInput() {
 		InputReader inputReader = new InputReader("input.txt");
-		List<String> inputDataList = inputReader.readFile();
+		List<String> inputDataList = inputReader.readIntoList();
 		InputData inputData = DataParserUtil.parseInputData(inputDataList);
 		return inputData;
 	}

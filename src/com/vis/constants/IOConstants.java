@@ -1,7 +1,8 @@
-/**
- * 
- */
 package com.vis.constants;
+/**
+ *
+ */
+
 
 /**
  * @author vis
@@ -9,6 +10,8 @@ package com.vis.constants;
  */
 public class IOConstants {
 
-	public static final String FAIL = "FAIL";
-	public static final String SUCCESS = "OK";
+	public static final String WORD_SPLITTER = ":";
+	public static final String CALIBRATION_FILENAME = "calibration.txt";
+	public static final long IO_TIME = 50;
+
 }

@@ -9,8 +9,6 @@ import java.util.Queue;
 import com.vis.constants.AlgorithmConstants;
 import com.vis.constants.BoardConstants;
 import com.vis.models.MaxMove;
-import com.vis.test.Node;
-import com.vis.test.VNode;
 
 /**
  * @author Vis
@@ -18,39 +16,11 @@ import com.vis.test.VNode;
  */
 public class MinimaxUtil {
 
-	private static final int MAX_HEAP_SIZE = 3;
-
-	public static VNode runAlphaBetaSearchTemplate(Node state, int depth) {
-		return maxValue(state, Integer.MIN_VALUE, Integer.MAX_VALUE, depth);
-	}
+	private static final int MAX_HEAP_SIZE = 10;
+	private static final int DEVIATION = 3;
 
 	public static com.vis.models.VNode runAlphaBetaSearch(com.vis.models.Node root, int depth) {
 		return maxValue(root, Integer.MIN_VALUE, Integer.MAX_VALUE, depth);
-	}
-
-	private static VNode maxValue(Node currentState, int alpha, int beta, int depth) {
-		if (shouldTerminate(currentState, depth))// terminal
-		{
-			int value = getValueFromUtility(currentState);
-			VNode vnode = prepareVNode(currentState, 0, value);
-			return vnode;
-		}
-		int v = Integer.MIN_VALUE;
-		VNode vnode = null;
-		for(int i=0;i<currentState.getChildrenList().size();i++)//each action a
-		{
-			int maxValue = minValue(getNextState(currentState, i), alpha, beta, depth - 1).getValue();
-			if (v < maxValue) {
-				v = maxValue;
-				vnode = prepareVNode(currentState, i, v);
-			}
-			if (v >= beta) {
-				vnode = prepareVNode(currentState, i, v);
-				return vnode;
-			}
-			alpha = Math.max(alpha, v);
-		}
-		return vnode;
 	}
 
 	private static com.vis.models.VNode maxValue(com.vis.models.Node currentState, int alpha, int beta, int depth) {
@@ -90,45 +60,6 @@ public class MinimaxUtil {
 		return vnode;
 	}
 
-	private static VNode minValue(Node currentState, int alpha, int beta, int depth) {
-		if (shouldTerminate(currentState, depth))// terminal
-		{
-			int value = getValueFromUtility(currentState);
-			VNode vnode = prepareVNode(currentState, 0, value);
-			return vnode;
-		}
-		VNode vnode = null;
-		int v = Integer.MAX_VALUE;
-		for(int i=0;i<currentState.getChildrenList().size();i++) //for each a in actions
-		{
-			int minValue = maxValue(getNextState(currentState, i), alpha, beta, depth - 1).getValue();
-			if (v > minValue) {
-				v = minValue;
-				vnode = prepareVNode(currentState, i, v);
-			}
-			if (v <= alpha) {
-				vnode = prepareVNode(currentState, i, v);
-				return vnode;
-			}
-			beta = Math.min(beta, v);
-		}
-		//VNode vnode = prepareVNode(currentState, currentState.getChildrenList().size() - 1, v);
-		return vnode;
-
-	}
-
-	private static VNode prepareVNode(Node currentState, int index, int value) {
-		VNode vnode = new VNode();
-		Node childNode = null;
-		if(!currentState.getChildrenList().isEmpty()){
-			childNode = currentState.getChildrenList().get(index);
-		}
-		vnode.setChildNode(childNode);
-		vnode.setValue(value);
-		return vnode;
-	}
-
-
 	private static com.vis.models.VNode minValue(com.vis.models.Node currentState, int alpha, int beta, int depth) {
 		com.vis.models.VNode vnode = null;
 		createChildStates(currentState, AlgorithmConstants.MIN);
@@ -155,25 +86,39 @@ public class MinimaxUtil {
 		return vnode;
 	}
 
-	private static void createChildStates(com.vis.models.Node currentState, String min) {
+	private static void createChildStates(com.vis.models.Node currentState, String moveName) {
 		Queue<MaxMove> moveHeap;
 		moveHeap = getMax3Move(currentState.getBoard());
-		// create children for this 3 max moves
-		for (MaxMove maxMove; !moveHeap.isEmpty();) {
-			maxMove = moveHeap.remove();
-			com.vis.models.Node childNode = new com.vis.models.Node();
-			char board[][] = makeAMove(currentState.getBoard(), maxMove);
-			childNode.setBoard(board);
-			childNode.setRowNo(maxMove.getI());
-			childNode.setColNo(maxMove.getJ());
-			if (AlgorithmConstants.MIN.equals(min)) {
-				childNode.setValue(-(int) Math.pow(maxMove.getValue(), 2) + currentState.getValue());
-			} else {
-				childNode.setValue((int) Math.pow(maxMove.getValue(), 2) + currentState.getValue());
+		// create children for these max moves
+		int i = 0; // atleast 3
+		for (MaxMove maxMove, topMove = null; !moveHeap.isEmpty(); i++) {
+			if(topMove==null){
+				topMove=maxMove = moveHeap.remove();
+			}else{
+				maxMove = moveHeap.remove();
+				if (i > 2 && topMove.getValue() - maxMove.getValue() > DEVIATION) {
+					break;
+				}
 			}
+
+			com.vis.models.Node childNode = createChildNode(currentState, maxMove, moveName);
 			currentState.addToChildrenList(childNode);
 		}
 
+	}
+
+	private static com.vis.models.Node createChildNode(com.vis.models.Node currentState, MaxMove maxMove,String moveName) {
+		com.vis.models.Node childNode = new com.vis.models.Node();
+		char board[][] = makeAMove(currentState.getBoard(), maxMove);
+		childNode.setBoard(board);
+		childNode.setRowNo(maxMove.getI());
+		childNode.setColNo(maxMove.getJ());
+		if (AlgorithmConstants.MIN.equals(moveName)) {
+			childNode.setValue(-(int) Math.pow(maxMove.getValue(), 2) + currentState.getValue());
+		} else {
+			childNode.setValue((int) Math.pow(maxMove.getValue(), 2) + currentState.getValue());
+		}
+		return childNode;
 	}
 
 	private static Queue<MaxMove> getMin3Move(char[][] board) {
@@ -248,10 +193,6 @@ public class MinimaxUtil {
 		return currentState.getChildrenList().get(index);
 	}
 
-	private static Node getNextState(Node currentState, int index) {
-		return currentState.getChildrenList().get(index);
-	}
-
 	private static Queue<MaxMove> getMax3Move(char[][] board) {
 		Queue<MaxMove> maxMoveHeap = new PriorityQueue<>((x, y) -> x.getValue() - y.getValue());
 		Queue<MaxMove> maxHeap = new PriorityQueue<>((x, y) -> y.getValue() - x.getValue());
@@ -304,22 +245,10 @@ public class MinimaxUtil {
 		return currentState.getValue();
 	}
 
-	private static boolean shouldTerminate(Node currentState, int depth) {
-		System.out.println("visited values" + currentState.getValue());
-		if (currentState.getChildrenList().isEmpty() || depth == 0)
-			return true;
-		return false;
-	}
-
 	private static boolean shouldTerminate(com.vis.models.Node currentState, int depth) {
 		if (currentState.getChildrenList().isEmpty() || depth == 0)
 			return true;
 		return false;
 	}
-
-	private static int getValueFromUtility(Node currentState) {
-		return currentState.getValue();
-	}
-
 
 }

@@ -3,6 +3,8 @@
  */
 package com.vis.test;
 
+import java.util.HashMap;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,6 +12,7 @@ import com.vis.models.InputData;
 import com.vis.models.OutputData;
 import com.vis.service.AlgorithmService;
 import com.vis.service.AlgorithmServiceImpl;
+import com.vis.starter.Starter;
 
 /**
  * @author Vis
@@ -89,6 +92,24 @@ public class AlgorithmServiceImplTest {
 
 	}
 
+	@Test
+	public void testGetDepthBasedOnTime_shouldReturnValidDepth() {
+		AlgorithmServiceImpl algorithmServiceImpl = new AlgorithmServiceImpl();
+		InputData inputData = createInput(null, 0, 5, 280);
+		Starter.calibrationMap = new HashMap<>();
+		for(int i=1;i<=9;i++){
+			Starter.calibrationMap.put(i, (float) (0.1 * i));
+		}
+		Assert.assertEquals(9, algorithmServiceImpl.getDepthBasedOnTime(inputData));
+		inputData.setTimeInSeconds(189);
+		Assert.assertEquals(8, algorithmServiceImpl.getDepthBasedOnTime(inputData));
+		inputData.setTimeInSeconds(188);
+		Assert.assertEquals(7, algorithmServiceImpl.getDepthBasedOnTime(inputData));
+		inputData.setTimeInSeconds(50);
+		Assert.assertEquals(4, algorithmServiceImpl.getDepthBasedOnTime(inputData));
+		inputData.setTimeInSeconds(2);
+		Assert.assertEquals(1, algorithmServiceImpl.getDepthBasedOnTime(inputData));
+	}
 	private InputData createInput(char[][] board, int gridLength, int noOfFruitTypes, float timeInSeconds) {
 		InputData inputData = new InputData();
 		inputData.setBoard(board);

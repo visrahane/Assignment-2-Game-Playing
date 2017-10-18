@@ -1,7 +1,8 @@
+package com.vis.constants;
 /**
  *
  */
-package com.vis.constants;
+
 
 /**
  * @author vis

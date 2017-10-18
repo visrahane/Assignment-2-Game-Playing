@@ -4,9 +4,11 @@
 package com.vis.service;
 
 import com.vis.constants.BoardConstants;
+import com.vis.constants.DepthMoveMapping;
 import com.vis.models.InputData;
 import com.vis.models.OutputData;
 import com.vis.models.VNode;
+import com.vis.starter.Starter;
 import com.vis.util.AlgorithmUtil;
 import com.vis.util.MinimaxUtil;
 
@@ -21,12 +23,24 @@ public class AlgorithmServiceImpl implements AlgorithmService {
 		OutputData outputData = new OutputData();
 		char tempBoard[][] = new char[inputData.getGridLength()][inputData.getGridLength()];
 		AlgorithmUtil.copyIntoTempGrid(tempBoard, inputData.getBoard());
-		int depth = 3;
+		int depth = getDepthBasedOnTime(inputData);
 		com.vis.models.VNode vNode = MinimaxUtil.runAlphaBetaSearch(new com.vis.models.Node(tempBoard), depth);
-		// makeAMove(inputData.getBoard(), maxMoveHeap, outputData);
-		// applyGravity(outputData.getBoard());
+		System.out.println("max value-" + vNode.getChildNode().getValue() + " depth-" + depth);
 		prepareOutput(outputData, vNode);
 		return outputData;
+	}
+
+	public int getDepthBasedOnTime(InputData inputData) {
+		int depth = 2;
+		int moves;
+		for (int i = Starter.calibrationMap.size(); i > 0; i--) {
+			moves = Math.round(inputData.getTimeInSeconds() / Starter.calibrationMap.get(i));
+			if (moves > DepthMoveMapping.getLimit(i)) {
+				return i;
+			}
+		}
+
+		return depth;
 	}
 
 	public void applyGravity(char[][] board) {

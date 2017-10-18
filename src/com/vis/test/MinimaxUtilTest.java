@@ -6,7 +6,7 @@ package com.vis.test;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.vis.util.MinimaxUtil;
+import com.vis.util.MinimaxTemplateUtil;
 
 /**
  * @author Vis
@@ -18,7 +18,7 @@ public class MinimaxUtilTest {
 	@Test
 	public void testRunAlphaBetaSearch_shouldReturnValue_whenValidInput() {
 		Node root = createTree();
-		VNode vNode = MinimaxUtil.runAlphaBetaSearchTemplate(root, 2);
+		VNode vNode = MinimaxTemplateUtil.runAlphaBetaSearchTemplate(root, 2);
 		System.out.println(vNode.getValue() + " " + vNode.getChildNode().getName());
 		Assert.assertEquals(-8, vNode.getValue());
 	}
@@ -60,7 +60,7 @@ public class MinimaxUtilTest {
 	public void testRunAlphaBetaSearch_shouldReturnValue_whenDepthLimit() {
 		Node root = createTree();
 		int depth = 1;
-		VNode vNode = MinimaxUtil.runAlphaBetaSearchTemplate(root, depth);
+		VNode vNode = MinimaxTemplateUtil.runAlphaBetaSearchTemplate(root, depth);
 		System.out.println(vNode.getValue() + " " + vNode.getChildNode().getName());
 		Assert.assertEquals(3, vNode.getValue());
 	}
